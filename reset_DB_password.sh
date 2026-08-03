@@ -2,6 +2,17 @@
 #
 # ispconfig-rotate-credentials.sh
 #
+# ==============================================================================
+# AUTHOR: Matteo Cisilino
+# EMAIL: matteocisilino@gmail.com
+# COMPATIBILITY: Tested on ISPConfig 3.3.1p1
+# LICENSE: Free Software - Use, modify, and distribute with attribution.
+#
+# DISCLAIMER: USE AT YOUR OWN RISK.
+# This script modifies core ISPConfig database credentials. Ensure you have
+# an external backup or VM snapshot before running this script. The author
+# is not responsible for broken configurations or data loss.
+# ==============================================================================
 # Ruota le credenziali dopo un incidente di sicurezza su un cluster ISPConfig 3.2.x
 # in configurazione "multiserver classico" (1 master DB di controllo, N slave che
 # si collegano da remoto allo stesso utente DB di controllo).

@@ -54,3 +54,17 @@ When you run the script, it will:
 ### Requirements
 - A working ISPConfig 3 installation (`/usr/local/ispconfig/`).
 - Standard Linux utilities: `bash`, `sed`, `grep`, `rsync`, `mysql`, `mysqldump`.
+
+### Compatibility
+- Tested successfully on **ISPConfig version 3.3.1p1**.
+
+### Disclaimer ⚠️
+**USE AT YOUR OWN RISK.**
+While this script performs automatic backups of the ISPConfig directory and databases before applying changes, it modifies core system credentials. 
+The author is not responsible for any data loss, system downtime, or broken configurations. **Always ensure you have an independent, full system backup (or a VM snapshot) available before running this tool.**
+
+### License & Credits
+This script is released as Free Software. You are free to distribute and modify it, provided that you include attribution to the original creator.
+
+**Creator:** Matteo Cisilino  
+**Email:** matteocisilino@gmail.com
