@@ -353,6 +353,36 @@ else
       fi
     done
 
+    # --- AGGIORNAMENTO SERVIZI ESTERNI ---
+    
+    # 1. Dovecot
+    DOVECOT_CONF="/etc/dovecot/dovecot-sql.conf"
+    if [[ -f "$DOVECOT_CONF" ]]; then
+      backup_file "$DOVECOT_CONF"
+      sed -i "s/password=[^ ]*/password=${NEW_CTRL_PASS}/" "$DOVECOT_CONF"
+      log "Aggiornata password in $DOVECOT_CONF"
+    fi
+
+    # 2. Pure-FTPd
+    PUREFTPD_CONF="/etc/pure-ftpd/db/mysql.conf"
+    if [[ -f "$PUREFTPD_CONF" ]]; then
+      backup_file "$PUREFTPD_CONF"
+      sed -i "s/^MYSQLPassword.*/MYSQLPassword   ${NEW_CTRL_PASS}/" "$PUREFTPD_CONF"
+      log "Aggiornata MYSQLPassword in $PUREFTPD_CONF"
+    fi
+
+    # 3. Postfix
+    if ls /etc/postfix/mysql-*.cf 1> /dev/null 2>&1; then
+      for f in /etc/postfix/mysql-*.cf; do
+        if [[ -f "$f" ]]; then
+          backup_file "$f"
+          sed -i "s/^password[ \t]*=.*/password = ${NEW_CTRL_PASS}/" "$f"
+          log "Aggiornata password in $f"
+        fi
+      done
+    fi
+    # --- FINE AGGIORNAMENTO SERVIZI ESTERNI ---
+
     echo
     echo "=================================================================="
     echo " Nuova password utente standard '${CTRL_DB_USER}' applicata con successo."
@@ -458,4 +488,23 @@ cleanup_mysql_defaults_file
 echo
 echo "Verifica dopo l'esecuzione su master + tutti gli slave:"
 echo "  tail -f /var/log/ispconfig/ispconfig.log"
+
+if [[ "${CONFIRM_B:-}" == "SI" || "${CONFIRM_B:-}" == "si" ]] && [[ "$DRY_RUN" -eq 0 ]]; then
+  echo
+  read -r -p "Vuoi riavviare i servizi (Dovecot, Pure-FTPd, Postfix) per applicare la nuova password? [SI/no]: " RESTART_SRV
+  if [[ -z "$RESTART_SRV" || "${RESTART_SRV^^}" == "SI" ]]; then
+    log "Riavvio servizi richiesto dall'utente..."
+    for svc in dovecot pure-ftpd-mysql pure-ftpd postfix; do
+      if systemctl is-active --quiet "$svc" 2>/dev/null; then
+        echo "Riavvio di $svc in corso..."
+        systemctl restart "$svc" || true
+        log "Servizio $svc riavviato."
+      fi
+    done
+    echo "Riavvio completato."
+  else
+    echo "Riavvio ignorato. Ricordati di riavviarli manualmente."
+  fi
+fi
+
 log "=== Script terminato ==="
