@@ -67,4 +67,4 @@ The author is not responsible for any data loss, system downtime, or broken conf
 This script is released as Free Software. You are free to distribute and modify it, provided that you include attribution to the original creator.
 
 **Creator:** Matteo Cisilino  
-**Email:** matteocisilino@gmail.com
+**Email:** matteocisilino+github@gmail.com
