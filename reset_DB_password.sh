@@ -367,7 +367,7 @@ else
     PUREFTPD_CONF="/etc/pure-ftpd/db/mysql.conf"
     if [[ -f "$PUREFTPD_CONF" ]]; then
       backup_file "$PUREFTPD_CONF"
-      sed -i "s/^MYSQLPassword.*/MYSQLPassword   ${NEW_CTRL_PASS}/" "$PUREFTPD_CONF"
+      sed -i -E "s/^[[:space:]]*MYSQLPassword.*/MYSQLPassword   ${NEW_CTRL_PASS}/i" "$PUREFTPD_CONF"
       log "Aggiornata MYSQLPassword in $PUREFTPD_CONF"
     fi
 
