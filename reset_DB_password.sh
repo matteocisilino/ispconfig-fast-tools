@@ -381,6 +381,14 @@ else
         fi
       done
     fi
+
+    # 4. Vlogger (se utilizza l'utente di controllo locale)
+    VLOGGER_CONF="/etc/vlogger-dbi.conf"
+    if [[ -f "$VLOGGER_CONF" ]] && grep -q -E "^[[:space:]]*user[[:space:]]+${CTRL_DB_USER}\b" "$VLOGGER_CONF"; then
+      backup_file "$VLOGGER_CONF"
+      sed -i -E "s/^[[:space:]]*pass[[:space:]]+.*/pass ${NEW_CTRL_PASS}/i" "$VLOGGER_CONF"
+      log "Aggiornata pass in $VLOGGER_CONF"
+    fi
     # --- FINE AGGIORNAMENTO SERVIZI ESTERNI ---
 
     echo
@@ -472,6 +480,14 @@ if [[ "$ROLE" == "slave" ]]; then
           fi
         done
         
+        # Aggiorna Vlogger se utilizza l'utente master remoto
+        VLOGGER_CONF="/etc/vlogger-dbi.conf"
+        if [[ -f "$VLOGGER_CONF" ]] && grep -q -E "^[[:space:]]*user[[:space:]]+${DBMASTER_USER}\b" "$VLOGGER_CONF"; then
+          backup_file "$VLOGGER_CONF"
+          sed -i -E "s/^[[:space:]]*pass[[:space:]]+.*/pass ${NEW_DBMASTER_PASS}/i" "$VLOGGER_CONF"
+          log "Aggiornata pass in $VLOGGER_CONF"
+        fi
+
         echo
         echo "=================================================================="
         echo " Nuova password utente slave '${DBMASTER_USER}' applicata con successo."
